@@ -1,22 +1,25 @@
 package me.xaanit.d4jscala.api
 
+import me.xaanit.d4jscala.util.Queue
 import sx.blah.discord.api.{ClientBuilder, IDiscordClient}
-import sx.blah.discord.handle.obj.{IGuild, IUser, StatusType}
+import sx.blah.discord.handle.obj.{IGuild, IMessage, IUser}
 import sx.blah.discord.util.Image
-import sx.blah.discord.util.cache.{Cache, ICacheDelegateProvider}
 
 protected class DiscordClient(private val client: IDiscordClient) {
 
 
-  def getApplicationClientID = ???
+  def getApplicationClientID: Long = client.getApplicationClientID.toLong
 
-  def changeUsername(username: String): IDiscordClient = ???
+  def changeUsername(username: String): Queue[IDiscordClient] = Queue(() => {
+    client.changeUsername(username)
+    client
+  })
 
-  def invisible() = ???
+  def invisible(): Queue[Unit] = Queue(() => client.invisible())
 
-  def getApplicationDescription = ???
+  def getApplicationDescription: String = client.getApplicationDescription
 
-  def getMessages(includePrivate: Boolean) = ???
+  def getMessages(includePrivate: Boolean): Queue[List[IMessage]] = ???
 
   def getMessages = ???
 

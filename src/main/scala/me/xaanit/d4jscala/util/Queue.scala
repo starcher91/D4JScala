@@ -4,54 +4,45 @@ import java.util.concurrent._
 import java.util.function.Consumer
 
 import sx.blah.discord.util.RequestBuffer
+import sx.blah.discord.util.RequestBuffer.IRequest
 
-class Queue[T](irequest: Option[RequestBuffer.IRequest[T]] = Option.empty, void: Option[RequestBuffer.IVoidRequest] = Option.empty) {
-  private val threadPool: Executor = new ThreadPoolExecutor(1, 3, 5, TimeUnit.MINUTES, new ArrayBlockingQueue[Runnable](128), new ThreadFactory {
-    override def newThread(r: Runnable): Thread = {
-      val thread: Thread = new Thread()
-      thread.setDaemon(true)
-      thread.setName("Queue Thread")
-      thread
-    }
-  })
+import scala.concurrent.Future
+import scala.util.Try
+
+/**
+  * A class to represent a request to discord that can be rate limited. Inspired by (but no code directly taken from) https://github.com/DV8FromTheWorld/JDA/wiki/7%29-Using-RestAction
+  *
+  * @param action The action to use.
+  * @tparam T The
+  */
+class Queue[T](action: IRequest[T]) {
+  val threadPool: Executor = new ThreadPoolExecutor(1, 3, 60, TimeUnit.SECONDS, new ArrayBlockingQueue[Runnable](128))
 
   /**
-    * Runs the request in sync. Returns the result.
+    * Runs the request in sync. Returns the result. <b>This blocks the thread. It's more advised to use the success consumer in {@ Queue#queue()}
     *
     * @return The result.
     * @throws UnsupportedOperationException If the IRequest optional is empty.
     */
-  def sync(): T = if (irequest.isDefined) RequestBuffer.request(irequest.get).get() else throw new UnsupportedOperationException("Void requests can not be used with sync!")
+  def sync(): T = RequestBuffer.request(action).get()
 
   /**
     * Runs the request in async.
+    *
+    * @param success The code to run on the returned result.
+    * @param failure The code to run on an error.
     */
-  def async(): Unit = if (irequest.isDefined) RequestBuffer.request(irequest.get) else RequestBuffer.request(void.get)
-
   def async(success: Consumer[T] = (t) => {}, failure: Consumer[Throwable] = (t) => {}): Unit = {
     threadPool.execute(() => {
-      if (irequest.isDefined) {
-        try {
-          val future = RequestBuffer.request(irequest.get)
-          while (!future.isDone) {
-            Thread.sleep(100)
-          }
-          val value: T = future.get()
-          success.accept(value)
-        } catch {
-          case e: Throwable => failure.accept(e)
-        }
-      } else {
-        try {
-          val future = RequestBuffer.request(void.get)
-          while (!future.isDone) {
-            Thread.sleep(100)
-          }
-          // Idk what to do here
-        } catch {
-          case e: Throwable => failure.accept(e)
-        }
-      }
+      Try(action.request()).fold((t) => failure.accept(t), (t) => success.accept(t))
     })
   }
+
+
+  //def method(): Future[T] = Future[T](RequestBuffer.request(action))
+
+}
+
+object Queue {
+  def apply[T](action: IRequest[T]): Queue[T] = new Queue(action)
 }
