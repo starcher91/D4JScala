@@ -6,7 +6,6 @@ import java.util.function.Consumer
 import sx.blah.discord.util.RequestBuffer
 import sx.blah.discord.util.RequestBuffer.IRequest
 
-import scala.concurrent.Future
 import scala.util.Try
 
 /**
@@ -32,17 +31,16 @@ class Queue[T](action: IRequest[T]) {
     * @param success The code to run on the returned result.
     * @param failure The code to run on an error.
     */
-  def async(success: Consumer[T] = (t) => {}, failure: Consumer[Throwable] = (t) => {}): Unit = {
+  def async(success: Consumer[T] = () => {}, failure: Consumer[Throwable] = () => {}): Unit = {
     threadPool.execute(() => {
       Try(action.request()).fold((t) => failure.accept(t), (t) => success.accept(t))
     })
   }
 
 
-  //def method(): Future[T] = Future[T](RequestBuffer.request(action))
-
 }
 
 object Queue {
   def apply[T](action: IRequest[T]): Queue[T] = new Queue(action)
+
 }
