@@ -1,4 +1,4 @@
-package me.xaanit.d4jscala.handle.obj
+package me.xaanit.d4jscala.api.handle.obj
 
 import com.vdurmont.emoji
 import sx.blah.discord.api.internal.json.objects.EmbedObject

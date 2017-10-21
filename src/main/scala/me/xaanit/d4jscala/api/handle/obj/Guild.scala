@@ -1,10 +1,10 @@
-package me.xaanit.d4jscala.handle.obj
+package me.xaanit.d4jscala.api.handle.obj
 
 import sx.blah.discord.handle.audit.ActionType
 import sx.blah.discord.handle.obj._
 import sx.blah.discord.util.Image
 
-class Guild(guild: IGuild) {
+class Guild(private[api] val guild: IGuild) {
   def getName = ???
 
   def pardonUser(userID: Long) = ???

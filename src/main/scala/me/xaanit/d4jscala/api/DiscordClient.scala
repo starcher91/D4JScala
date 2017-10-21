@@ -1,12 +1,15 @@
 package me.xaanit.d4jscala.api
 
 import me.xaanit.d4jscala.util.Queue
-import sx.blah.discord.api.{ClientBuilder, IDiscordClient}
+import sx.blah.discord.api.{ClientBuilder, IDiscordClient, IShard}
 import sx.blah.discord.handle.obj._
 import sx.blah.discord.util.Image
 import me.xaanit.d4jscala._
-import me.xaanit.d4jscala.handle.obj._
+import me.xaanit.d4jscala.api.handle.obj._
+import sx.blah.discord.api.events.EventDispatcher
+import sx.blah.discord.api.internal.{DiscordClientImpl, ShardImpl}
 import sx.blah.discord.modules.ModuleLoader
+
 import scala.collection.mutable.ListBuffer
 
 protected class DiscordClient(private val client: IDiscordClient) {
@@ -45,9 +48,9 @@ protected class DiscordClient(private val client: IDiscordClient) {
 
   def getUsers: List[User] = getList[User, IUser](client.getUsers, _.toWrappedUser)
 
-  def fetchUser(id: Long):Queue[Option[User]] = Queue(() => {
+  def fetchUser(id: Long): Queue[Option[User]] = Queue(() => {
     val user: IUser = client.fetchUser(id)
-    if(user == null) Option.empty else Option[User](user.toWrappedUser)
+    if (user == null) Option.empty else Option[User](user.toWrappedUser)
   })
 
   def getCategoriesByName(name: String): List[Category] = getList[Category, ICategory](client.getCategoriesByName(name), _.toWrappedCategory)
@@ -60,7 +63,7 @@ protected class DiscordClient(private val client: IDiscordClient) {
 
   def getRegionByID(regionID: String): Option[Region] = {
     val region: IRegion = client.getRegionByID(regionID)
-    if(region == null) Option.empty else Option[Region](region.toWrappedRegion)
+    if (region == null) Option.empty else Option[Region](region.toWrappedRegion)
   }
 
   def mute(guild: IGuild, isSelfMuted: Boolean): Queue[Unit] = Queue(() => client.mute(guild, isSelfMuted))
@@ -73,7 +76,7 @@ protected class DiscordClient(private val client: IDiscordClient) {
 
   def getGuildByID(id: Long): Option[Guild] = {
     val guild: IGuild = client.getGuildByID(id)
-    if(guild == null) Option.empty else Option[Guild](guild.toWrappedGuild)
+    if (guild == null) Option.empty else Option[Guild](guild.toWrappedGuild)
   }
 
   def getOurUser: User = client.getOurUser.toWrappedUser
@@ -82,7 +85,7 @@ protected class DiscordClient(private val client: IDiscordClient) {
 
   def getChannelByID(id: Long): Option[Channel] = {
     val channel: IChannel = client.getChannelByID(id)
-    if(channel == null) Option.empty else Option[Channel](channel.toWrappedChannel)
+    if (channel == null) Option.empty else Option[Channel](channel.toWrappedChannel)
   }
 
   def getApplicationOwner: User = client.getApplicationOwner.toWrappedUser
@@ -98,48 +101,60 @@ protected class DiscordClient(private val client: IDiscordClient) {
     this
   })
 
-  def getInviteForCode(code: String) = ???
+  def getInviteForCode(code: String): Option[Invite] = {
+    val invite: IInvite = client.getInviteForCode(code)
+    if (invite == null) Option.empty else Option[Invite](invite.toWrappedInvite)
+  }
 
-  def getOrCreatePMChannel(user: IUser) = ???
+  def getOrCreatePMChannel(user: User): Queue[PrivateChannel] = Queue(() => client.getOrCreatePMChannel(user.user).toWrappedChannel)
 
-  def getRoleByID(roleID: Long) = ???
+  def getRoleByID(id: Long): Option[Role] = {
+    val role: IRole = client.getRoleByID(id)
+    if (role == null) Option.empty else Option[Role](role.toWrappedRole)
+  }
 
-  def getVoiceChannels = ???
+  def getVoiceChannels: List[VoiceChannel] = getList[VoiceChannel, IVoiceChannel](client.getVoiceChannels, _.toWrappedChannel)
 
-  def streaming(playingText: String, streamingUrl: String) = ???
+  def streaming(playingText: String, streamingUrl: String): Queue[Unit] = Queue(() => client.streaming(playingText, streamingUrl))
 
-  def changePlayingText(playingText: String) = ???
+  def changePlayingText(playingText: String): Queue[Unit] = Queue(() => client.changePlayingText(playingText))
 
-  def getApplicationIconURL = ???
+  def getApplicationIconURL: String = client.getApplicationIconURL
 
-  def getMessageByID(messageID: Long) = ???
+  def getMessageByID(id: Long): Option[Message] = {
+    val message: IMessage = client.getMessageByID(id)
+    if (message == null) Option.empty else Option[Message](message.toWrappedMessage)
+  }
 
-  def getUserByID(userID: Long) = ???
+  def getUserByID(id: Long): Option[User] = {
+    val user: IUser = client.getUserByID(id)
+    if (user == null) Option.empty else Option[User](user.toWrappedUser)
+  }
 
-  def idle(playingText: String) = ???
+  def idle(playingText: String): Queue[Unit] = Queue(() => client.idle(playingText))
 
-  def idle() = ???
+  def idle(): Queue[Unit] = Queue(() => client.idle())
 
-  def getDispatcher = ???
+  def getDispatcher: EventDispatcher = client.getDispatcher
 
-  def deafen(guild: IGuild, isSelfDeafened: Boolean) = ???
+  def deafen(guild: Guild, isSelfDeafened: Boolean): Queue[Unit] = Queue(() => client.deafen(guild.guild, isSelfDeafened))
 
-  def getShards = ???
+  def getShards: List[Shard] = getList[Shard, IShard](client.getShards, _.toWrappedShard)
 
-  def changeAvatar(avatar: Image) = ???
+  def changeAvatar(avatar: Image): Queue[Unit] = Queue(() => client.changeAvatar(avatar))
 
-  def getToken = ???
+  def getToken: String = client.getToken
 
-  def getChannels(includePrivate: Boolean) = ???
+  def getChannels(includePrivate: Boolean): List[Channel] = getList[Channel, IChannel](client.getChannels(includePrivate), _.toWrappedChannel)
 
-  def getChannels = ???
+  def getChannels: List[Channel] = getChannels(includePrivate = true)
 
-  def online(playingText: String) = ???
+  def online(playingText: String): Queue[Unit] = Queue(() => client.online(playingText))
 
-  def online() = ???
+  def online(): Queue[Unit] = Queue(() => client.online)
 
-  private def getList[T, U](list: java.util.List[U], map: U => T): List[T] = {
-    val buffer: ListBuffer[T] = ListBuffer[T]()
+  private def getList[WrappedType, UnwrappedType](list: java.util.List[UnwrappedType], map: UnwrappedType => WrappedType): List[WrappedType] = {
+    val buffer: ListBuffer[WrappedType] = ListBuffer[WrappedType]()
     list.forEach(e => buffer += map(e))
     buffer.toList
   }

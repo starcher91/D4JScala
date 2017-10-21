@@ -1,9 +1,8 @@
 package me.xaanit
 
-import me.xaanit.d4jscala.handle.obj._
+import me.xaanit.d4jscala.api.handle.obj._
+import sx.blah.discord.api.IShard
 import sx.blah.discord.handle.obj._
-
-import scala.collection.mutable.ListBuffer
 
 package object d4jscala {
 
@@ -39,12 +38,20 @@ package object d4jscala {
     def toWrappedChannel(): Channel = Channel(channel)
   }
 
-  implicit class ListFunctions[T](val list: java.util.List[T]) extends AnyVal  {
-     def toImmutableList(): List[T] = {
-      val converted: ListBuffer[T] = new ListBuffer[T]()
-      for(i <- list) converted += i
-      converted.toList
-    }
+  implicit class ConversionPrivateChannel(val channel: IPrivateChannel) extends AnyVal {
+    def toWrappedChannel(): PrivateChannel = PrivateChannel(channel)
+  }
+
+  implicit class ConversionInvite(val invite: IInvite) extends AnyVal {
+    def toWrappedInvite(): Invite = Invite(invite)
+  }
+
+  implicit class ConversionShard(val shard: IShard) extends AnyVal {
+    def toWrappedShard(): Shard = Shard(shard)
+  }
+
+  implicit class ConversionExtendedInvite(val invite: IExtendedInvite) extends AnyVal {
+    def toWrappedInvite(): ExtendedInvite = ExtendedInvite(invite)
   }
 
 }

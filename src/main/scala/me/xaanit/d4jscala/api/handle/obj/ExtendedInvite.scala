@@ -1,8 +1,8 @@
-package me.xaanit.d4jscala.handle.obj
+package me.xaanit.d4jscala.api.handle.obj
 
 import sx.blah.discord.handle.obj.IExtendedInvite
 
-class ExtendedInvite(invite: IExtendedInvite) {
+class ExtendedInvite(invite: IExtendedInvite) extends Invite(invite) {
   def getUses = ???
 
   def getMaxUses = ???
@@ -15,17 +15,17 @@ class ExtendedInvite(invite: IExtendedInvite) {
 
   def getCreationTime = ???
 
-  def getGuild = ???
+  override def getGuild = ???
 
-  def getClient = ???
+  override def getClient = ???
 
-  def delete() = ???
+  override def delete() = ???
 
-  def getInviter = ???
+  override def getInviter = ???
 
-  def getChannel = ???
+  override def getChannel = ???
 
-  def getCode = ???
+  override def getCode = ???
 }
 
 object ExtendedInvite {
