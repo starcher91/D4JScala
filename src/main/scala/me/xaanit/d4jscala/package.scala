@@ -27,6 +27,18 @@ package object d4jscala {
     def toWrappedCategory(): Category = Category(category)
   }
 
+  implicit class ConversionRole(val role: IRole) extends AnyVal {
+    def toWrappedRole(): Role = Role(role)
+  }
+
+  implicit class ConversionRegion(val region: IRegion) extends AnyVal {
+    def toWrappedRegion(): Region = Region(region)
+  }
+
+  implicit class ConversionChannel(val channel: IChannel) extends AnyVal {
+    def toWrappedChannel(): Channel = Channel(channel)
+  }
+
   implicit class ListFunctions[T](val list: java.util.List[T]) extends AnyVal  {
      def toImmutableList(): List[T] = {
       val converted: ListBuffer[T] = new ListBuffer[T]()

@@ -13,12 +13,14 @@ import scala.util.Try
   *
   * @param action The action to use.
   * @tparam T The
+  * @author xaanit
+  * @since 2.9.1
   */
 class Queue[T](action: IRequest[T]) {
   val threadPool: Executor = new ThreadPoolExecutor(1, 3, 60, TimeUnit.SECONDS, new ArrayBlockingQueue[Runnable](128))
 
   /**
-    * Runs the request in sync. Returns the result. <b>This blocks the thread. It's more advised to use the success consumer in {@ Queue#queue()}
+    * Runs the request in sync. Returns the result. <b>This blocks the thread. It's more advised to use the success consumer in Queue#queue()</b>
     *
     * @return The result.
     * @throws UnsupportedOperationException If the IRequest optional is empty.
