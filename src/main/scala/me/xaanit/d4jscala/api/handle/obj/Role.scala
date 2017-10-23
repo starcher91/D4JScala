@@ -3,28 +3,30 @@ package me.xaanit.d4jscala.api.handle.obj
 import java.awt.Color
 import java.util
 
+import me.xaanit.d4jscala._
+import me.xaanit.d4jscala.util.Queue
 import sx.blah.discord.handle.obj.{IRole, Permissions}
 
-class Role(role: IRole) {
-  def getGuild = ???
+class Role(private[api] val role: IRole) {
+  def getGuild: Guild = role.getGuild.toWrappedGuild
 
-  def getName = ???
+  def getName: String = role.getName
 
-  def changeColor(color: Color) = ???
+  def changeColor(color: Color): Queue[Unit] = Queue(() => role.changeColor(color))
 
-  def changeMentionable(isMentionable: Boolean) = ???
+  def changeMentionable(isMentionable: Boolean): Queue[Unit] = Queue(() => role.changeMentionable(isMentionable))
 
-  def delete() = ???
+  def delete(): Queue[Unit] = Queue(() => role.delete())
 
-  def changeHoist(hoist: Boolean) = ???
+  def changeHoist(hoist: Boolean): Queue[Unit] = Queue(() => role.changeHoist(hoist))
 
-  def mention() = ???
+  def mention(): String = role.mention()
 
-  def isDeleted = ???
+  def isDeleted: Boolean = role.isDeleted
 
-  def isHoisted = ???
+  def isHoisted: Boolean = role.isHoisted
 
-  def changePermissions(permissions: util.EnumSet[Permissions]) = ???
+  def changePermissions(permissions: Set[Permissions]): Queue[Unit] = Queue(() => role.changePermissions(permissions.toEnumSet))
 
   def edit(color: Color, hoist: Boolean, name: String, permissions: util.EnumSet[Permissions], isMentionable: Boolean) = ???
 

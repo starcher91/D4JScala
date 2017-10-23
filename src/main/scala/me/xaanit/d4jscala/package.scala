@@ -1,11 +1,10 @@
 package me.xaanit
 
-import java.util
-
-import me.xaanit.d4jscala.api.DiscordClient
 import me.xaanit.d4jscala.api.handle.obj._
 import sx.blah.discord.api.{IDiscordClient, IShard}
 import sx.blah.discord.handle.obj._
+
+import scala.collection.mutable.ListBuffer
 
 package object d4jscala {
 
@@ -62,20 +61,36 @@ package object d4jscala {
   }
 
   implicit class ConversionClient(val client: IDiscordClient) extends AnyVal {
-   def toWrappedClient(): api.DiscordClient = new api.DiscordClient(client)
+    def toWrappedClient(): api.DiscordClient = new api.DiscordClient(client)
   }
+
   implicit class ConversionVoiceState(val state: IVoiceState) extends AnyVal {
-    def toWrappedState(): VoiceState = VoiceState(state)
+    def toWrappedState(): me.xaanit.d4jscala.api.handle.obj.VoiceState = VoiceState(state)
+  }
+
+  implicit class ConversionPresence(val presence: IPresence) extends AnyVal {
+    def toWrappedPresence(): Presence = Presence(presence)
   }
 
   import java.util
+
   implicit class ConversionEnumSet[T](val set: util.EnumSet[T]) extends AnyVal {
     def toSet(): Set[T] = {
       val mutable: scala.collection.mutable.Set[T] = scala.collection.mutable.Set()
-      for(t <- set) mutable += t
+      for (t <- set) mutable += t
       mutable.toSet
     }
   }
+
+  implicit class ConversionList[WrappedType, UnwrappedType](val list: util.List[UnwrappedType]) extends AnyVal {
+    def toWrappedList[WrappedType, UnwrappedType](map: UnwrappedType => WrappedType): List[WrappedType] = {
+      val buffer: ListBuffer[WrappedType] = ListBuffer[WrappedType]()
+      list.forEach(e => buffer += map(e))
+      buffer.toList
+    }
+  }
+
+
 
 }
 

@@ -1,11 +1,16 @@
 package me.xaanit.d4jscala.api.handle.obj
 
+import java.awt.Color
+
+import com.koloboke.function.LongObjConsumer
 import me.xaanit.d4jscala.util.Queue
 import me.xaanit.d4jscala._
 import me.xaanit.d4jscala.api.DiscordClient
 import sx.blah.discord.api.internal.DiscordClientImpl
 import sx.blah.discord.handle.obj._
 import sx.blah.discord.util.cache.{Cache, LongMap}
+
+import scala.collection.mutable
 
 class User(private[api] val user: IUser) {
   def getAvatarURL: String = user.getAvatarURL
@@ -24,47 +29,46 @@ class User(private[api] val user: IUser) {
 
   def moveToVoiceChannel(channel: VoiceChannel): Queue[Unit] = Queue(() => user.moveToVoiceChannel(channel.channel))
 
-  def getVoiceStates: LongMap[VoiceState] = {
+  def getVoiceStates: Map[Long, VoiceState] = {
     val states: LongMap[IVoiceState] = user.getVoiceStates
-    val cache: Cache[VoiceState] = new Cache[VoiceState](getClient.client.asInstanceOf[DiscordClientImpl], classOf[VoiceState])
-    for(s <- states) {
-      s match {
-        case vs: IVoiceState => cache.put(vs.toWrappedState)
-        case _ => // Ignore
-      }
-    }
-    cache.mapCopy()
+    val map: mutable.Map[Long, VoiceState] = mutable.Map()
+    states.keySet.forEach(key => {
+      map += key.toLong -> states.get(key).toWrappedState
+      1L
+    })
+    map.toMap[Long, VoiceState]
   }
 
-  def getVoiceStateForGuild(guild: IGuild) = ???
+  def getVoiceStateForGuild(guild: Guild): VoiceState = user.getVoiceStateForGuild(guild.guild).toWrappedState
 
-  def getVoiceStatesLong = ???
+  def getColorForGuild(guild: Guild): Color = user.getColorForGuild(guild.guild)
 
-  def getColorForGuild(guild: IGuild) = ???
+  def removeRole(role: Role): Queue[Unit] = Queue(() => user.removeRole(role.role))
 
-  def removeRole(role: IRole) = ???
+  def getRolesForGuild(guild: Guild): List[Role] = user.getRolesForGuild(guild.guild).toWrappedList[Role, IRole](_.toWrappedRole)
 
-  def getRolesForGuild(guild: IGuild) = ???
+  def getPresence: Presence = user.getPresence.toWrappedPresence
 
-  def getPresence = ???
+  def getNicknameForGuild(guild: Guild): Option[String] = {
+    val nickname: String = user.getNicknameForGuild(guild.guild)
+    if (nickname == null) None else Some[String](nickname)
+  }
 
-  def getNicknameForGuild(guild: IGuild) = ???
+  def getDiscriminator: String = user.getDiscriminator
 
-  def getDiscriminator = ???
+  def getDisplayName(guild: Guild): String = user.getDisplayName(guild.guild)
 
-  def getDisplayName(guild: IGuild) = ???
+  def getPermissionsForGuild(guild: Guild): Set[Permissions] = user.getPermissionsForGuild(guild.guild).toSet
 
-  def getPermissionsForGuild(guild: IGuild) = ???
+  def addRole(role: Role): Queue[Unit] = Queue(() => user.addRole(role.role))
 
-  def addRole(role: IRole) = ???
+  def getShard: Shard = user.getShard.toWrappedShard
 
-  def getShard = ???
-
-  def copy() = ???
+  def copy(): User = user.copy.toWrappedUser
 
   def getClient: DiscordClient = user.getClient.toWrappedClient
 
-  def getLongID = ???
+  def getLongID: Long = user.getLongID
 }
 
 object User {

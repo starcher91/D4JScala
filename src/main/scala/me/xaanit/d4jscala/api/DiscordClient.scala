@@ -22,13 +22,13 @@ protected[d4jscala] class DiscordClient(private[api] val client: IDiscordClient)
 
   def getApplicationDescription: String = client.getApplicationDescription
 
-  def getMessages(includePrivate: Boolean): Queue[List[Message]] = Queue(() => getList[Message, IMessage](client.getMessages(includePrivate), _.toWrappedMessage))
+  def getMessages(includePrivate: Boolean): Queue[List[Message]] = Queue(() => client.getMessages(includePrivate).toWrappedList[Message, IMessage](_.toWrappedMessage))
 
   def getMessages: Queue[List[Message]] = getMessages(true)
 
   def getUsersByName(name: String): List[User] = getUsersByName(name, ignoreCase = false)
 
-  def getUsersByName(name: String, ignoreCase: Boolean): List[User] = getList[User, IUser](client.getUsersByName(name, ignoreCase), _.toWrappedUser)
+  def getUsersByName(name: String, ignoreCase: Boolean): List[User] = client.getUsersByName(name, ignoreCase).toWrappedList[User, IUser](_.toWrappedUser)
 
   def getVoiceChannelByID(id: Long): Option[VoiceChannel] = {
     val channel: IVoiceChannel = client.getVoiceChannelByID(id)
@@ -44,22 +44,22 @@ protected[d4jscala] class DiscordClient(private[api] val client: IDiscordClient)
     if (category == null) None else Some[Category](category.toWrappedCategory)
   }
 
-  def getCategories: List[Category] = getList[Category, ICategory](client.getCategories, _.toWrappedCategory)
+  def getCategories: List[Category] = client.getCategories.toWrappedList[Category, ICategory](_.toWrappedCategory)
 
-  def getUsers: List[User] = getList[User, IUser](client.getUsers, _.toWrappedUser)
+  def getUsers: List[User] = client.getUsers.toWrappedList[User, IUser](_.toWrappedUser)
 
   def fetchUser(id: Long): Queue[Option[User]] = Queue(() => {
     val user: IUser = client.fetchUser(id)
     if (user == null) None else Some[User](user.toWrappedUser)
   })
 
-  def getCategoriesByName(name: String): List[Category] = getList[Category, ICategory](client.getCategoriesByName(name), _.toWrappedCategory)
+  def getCategoriesByName(name: String): List[Category] = client.getCategories.toWrappedList[Category, ICategory](_.toWrappedCategory)
 
   def dnd(playingText: String): Queue[Unit] = Queue(() => client.dnd(playingText))
 
   def dnd(): Queue[Unit] = Queue(() => client.dnd())
 
-  def getRoles: List[Role] = getList[Role, IRole](client.getRoles, _.toWrappedRole)
+  def getRoles: List[Role] = client.getRoles.toWrappedList[Role, IRole](_.toWrappedRole)
 
   def getRegionByID(regionID: String): Option[Region] = {
     val region: IRegion = client.getRegionByID(regionID)
@@ -70,9 +70,9 @@ protected[d4jscala] class DiscordClient(private[api] val client: IDiscordClient)
 
   def getShardCount: Int = client.getShardCount
 
-  def getGuilds: List[Guild] = getList[Guild, IGuild](client.getGuilds, _.toWrappedGuild)
+  def getGuilds: List[Guild] = client.getGuilds.toWrappedList[Guild, IGuild](_.toWrappedGuild)
 
-  def getConnectedVoiceChannels: List[VoiceChannel] = getList[VoiceChannel, IVoiceChannel](client.getConnectedVoiceChannels, _.toWrappedChannel)
+  def getConnectedVoiceChannels: List[VoiceChannel] = client.getConnectedVoiceChannels.toWrappedList[VoiceChannel, IVoiceChannel](_.toWrappedChannel)
 
   def getGuildByID(id: Long): Option[Guild] = {
     val guild: IGuild = client.getGuildByID(id)
@@ -90,7 +90,7 @@ protected[d4jscala] class DiscordClient(private[api] val client: IDiscordClient)
 
   def getApplicationOwner: User = client.getApplicationOwner.toWrappedUser
 
-  def getRegions: List[Region] = getList[Region, IRegion](client.getRegions, _.toWrappedRegion)
+  def getRegions: List[Region] = client.getRegions.toWrappedList[Region, IRegion](_.toWrappedRegion)
 
   def getApplicationName: String = client.getApplicationName
 
@@ -113,7 +113,7 @@ protected[d4jscala] class DiscordClient(private[api] val client: IDiscordClient)
     if (role == null) None else Some[Role](role.toWrappedRole)
   }
 
-  def getVoiceChannels: List[VoiceChannel] = getList[VoiceChannel, IVoiceChannel](client.getVoiceChannels, _.toWrappedChannel)
+  def getVoiceChannels: List[VoiceChannel] = client.getVoiceChannels.toWrappedList[VoiceChannel, IVoiceChannel](_.toWrappedChannel)
 
   def streaming(playingText: String, streamingUrl: String): Queue[Unit] = Queue(() => client.streaming(playingText, streamingUrl))
 
@@ -139,13 +139,13 @@ protected[d4jscala] class DiscordClient(private[api] val client: IDiscordClient)
 
   def deafen(guild: Guild, isSelfDeafened: Boolean): Queue[Unit] = Queue(() => client.deafen(guild.guild, isSelfDeafened))
 
-  def getShards: List[Shard] = getList[Shard, IShard](client.getShards, _.toWrappedShard)
+  def getShards: List[Shard] = client.getShards.toWrappedList[Shard, IShard](_.toWrappedShard)
 
   def changeAvatar(avatar: Image): Queue[Unit] = Queue(() => client.changeAvatar(avatar))
 
   def getToken: String = client.getToken
 
-  def getChannels(includePrivate: Boolean): List[Channel] = getList[Channel, IChannel](client.getChannels(includePrivate), _.toWrappedChannel)
+  def getChannels(includePrivate: Boolean): List[Channel] = client.getChannels(includePrivate).toWrappedList[Channel, IChannel](_.toWrappedChannel)
 
   def getChannels: List[Channel] = getChannels(includePrivate = true)
 
@@ -153,11 +153,6 @@ protected[d4jscala] class DiscordClient(private[api] val client: IDiscordClient)
 
   def online(): Queue[Unit] = Queue(() => client.online)
 
-  private def getList[WrappedType, UnwrappedType](list: java.util.List[UnwrappedType], map: UnwrappedType => WrappedType): List[WrappedType] = {
-    val buffer: ListBuffer[WrappedType] = ListBuffer[WrappedType]()
-    list.forEach(e => buffer += map(e))
-    buffer.toList
-  }
 }
 
 
