@@ -1,17 +1,20 @@
 package me.xaanit
 
+import java.util
+
+import me.xaanit.d4jscala.api.DiscordClient
 import me.xaanit.d4jscala.api.handle.obj._
-import sx.blah.discord.api.IShard
+import sx.blah.discord.api.{IDiscordClient, IShard}
 import sx.blah.discord.handle.obj._
 
 package object d4jscala {
 
-  implicit class ConverisionUser(val user: IUser) extends AnyVal  {
-     def toWrappedUser(): User = User(user)
+  implicit class ConverisionUser(val user: IUser) extends AnyVal {
+    def toWrappedUser(): User = User(user)
   }
 
-  implicit class ConversionMessage(val message: IMessage) extends AnyVal  {
-     def toWrappedMessage(): Message = Message(message)
+  implicit class ConversionMessage(val message: IMessage) extends AnyVal {
+    def toWrappedMessage(): Message = Message(message)
   }
 
   implicit class ConversionVoiceChannel(val channel: IVoiceChannel) extends AnyVal {
@@ -52,6 +55,26 @@ package object d4jscala {
 
   implicit class ConversionExtendedInvite(val invite: IExtendedInvite) extends AnyVal {
     def toWrappedInvite(): ExtendedInvite = ExtendedInvite(invite)
+  }
+
+  implicit class ConversionPermissionOverride(val over: PermissionOverride) extends AnyVal {
+    def toWrappedOverride(): PermissionsOverride = new PermissionsOverride(over.allow().toSet, over.deny.toSet, over.getLongID)
+  }
+
+  implicit class ConversionClient(val client: IDiscordClient) extends AnyVal {
+   def toWrappedClient(): api.DiscordClient = new api.DiscordClient(client)
+  }
+  implicit class ConversionVoiceState(val state: IVoiceState) extends AnyVal {
+    def toWrappedState(): VoiceState = VoiceState(state)
+  }
+
+  import java.util
+  implicit class ConversionEnumSet[T](val set: util.EnumSet[T]) extends AnyVal {
+    def toSet(): Set[T] = {
+      val mutable: scala.collection.mutable.Set[T] = scala.collection.mutable.Set()
+      for(t <- set) mutable += t
+      mutable.toSet
+    }
   }
 
 }

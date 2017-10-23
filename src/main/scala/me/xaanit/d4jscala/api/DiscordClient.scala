@@ -12,7 +12,7 @@ import sx.blah.discord.modules.ModuleLoader
 
 import scala.collection.mutable.ListBuffer
 
-protected class DiscordClient(private val client: IDiscordClient) {
+protected[d4jscala] class DiscordClient(private[api] val client: IDiscordClient) {
 
   def getApplicationClientID: Long = client.getApplicationClientID.toLong
 
@@ -165,5 +165,6 @@ object DiscordClient {
   def apply(builder: ClientBuilder): DiscordClient = {
     new DiscordClient(builder.login)
   }
+
 
 }

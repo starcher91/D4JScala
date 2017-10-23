@@ -8,7 +8,7 @@ import sx.blah.discord.api.internal.json.objects.EmbedObject
 import sx.blah.discord.handle.obj._
 import sx.blah.discord.util.{AttachmentPartEntry, Image, MessageBuilder}
 
-class VoiceChannel(channel: IVoiceChannel) extends Channel(channel) {
+class VoiceChannel(private[api] val channel: IVoiceChannel) extends Channel(channel) {
   override def getMaxInternalCacheCount = ???
 
   def getBitrate = ???

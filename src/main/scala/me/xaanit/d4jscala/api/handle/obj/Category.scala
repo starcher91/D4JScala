@@ -2,25 +2,51 @@ package me.xaanit.d4jscala.api.handle.obj
 
 import java.util
 
-import sx.blah.discord.handle.obj.{ICategory, IRole, IUser, Permissions}
+import com.koloboke.collect.set.LongSet
+import com.koloboke.function.{LongObjConsumer, LongObjPredicate}
+import sx.blah.discord.handle.obj._
 import me.xaanit.d4jscala._
+import me.xaanit.d4jscala.util.Queue
+import sx.blah.discord.util.cache.LongMap
 
 class Category(category: ICategory) {
   def getGuild: Guild = category.getGuild.toWrappedGuild
 
-  def getName = ???
+  def getName: String = category.getName
 
-  def delete() = ???
+  def delete(): Queue[Unit] = Queue(() => category.delete)
 
-  def isDeleted = ???
+  def isDeleted: Boolean = category.isDeleted
 
-  def getUserOverrides = ???
+  def getUserOverrides: PermissionsOverride = {
+    val over: LongMap[PermissionOverride] = category.getUserOverrides
+    val map: LongMap[PermissionsOverride] = new LongMap[PermissionsOverride] {override def forEachWhile(predicate: LongObjPredicate[_ >: PermissionsOverride]): Boolean = ???
+
+      override def containsKey(key: Long): Boolean = ???
+
+      override def forEach(action: LongObjConsumer[_ >: PermissionsOverride]): Unit = ???
+
+      override def values(): util.Collection[PermissionsOverride] = ???
+
+      override def clear(): Unit = ???
+
+      override def remove(key: Long): PermissionsOverride = ???
+
+      override def put(key: Long, value: PermissionsOverride): PermissionsOverride = ???
+
+      override def size(): Int = ???
+
+      override def get(key: Long): PermissionsOverride = ???
+
+      override def keySet(): LongSet = ???
+    }
+  }
 
   def isNSFW = ???
 
-  def getModifiedPermissions(user: IUser) = ???
+  def getModifiedPermissions(user: IUser): Set[Permissions] = ???
 
-  def getModifiedPermissions(role: IRole) = ???
+  def getModifiedPermissions(role: IRole): Set[Permissions] = ???
 
   def getRoleOverrides = ???
 
