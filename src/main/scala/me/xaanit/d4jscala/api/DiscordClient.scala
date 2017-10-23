@@ -32,7 +32,7 @@ protected class DiscordClient(private val client: IDiscordClient) {
 
   def getVoiceChannelByID(id: Long): Option[VoiceChannel] = {
     val channel: IVoiceChannel = client.getVoiceChannelByID(id)
-    if (channel == null) Option.empty else Option[VoiceChannel](channel.toWrappedChannel)
+    if (channel == null) None else Some[VoiceChannel](channel.toWrappedChannel)
   }
 
   def getModuleLoader: ModuleLoader = client.getModuleLoader
@@ -41,7 +41,7 @@ protected class DiscordClient(private val client: IDiscordClient) {
 
   def getCategoryByID(id: Long): Option[Category] = {
     val category: ICategory = client.getCategoryByID(id)
-    if (category == null) Option.empty else Option[Category](category.toWrappedCategory)
+    if (category == null) None else Some[Category](category.toWrappedCategory)
   }
 
   def getCategories: List[Category] = getList[Category, ICategory](client.getCategories, _.toWrappedCategory)
@@ -50,7 +50,7 @@ protected class DiscordClient(private val client: IDiscordClient) {
 
   def fetchUser(id: Long): Queue[Option[User]] = Queue(() => {
     val user: IUser = client.fetchUser(id)
-    if (user == null) Option.empty else Option[User](user.toWrappedUser)
+    if (user == null) None else Some[User](user.toWrappedUser)
   })
 
   def getCategoriesByName(name: String): List[Category] = getList[Category, ICategory](client.getCategoriesByName(name), _.toWrappedCategory)
@@ -63,7 +63,7 @@ protected class DiscordClient(private val client: IDiscordClient) {
 
   def getRegionByID(regionID: String): Option[Region] = {
     val region: IRegion = client.getRegionByID(regionID)
-    if (region == null) Option.empty else Option[Region](region.toWrappedRegion)
+    if (region == null) None else Some[Region](region.toWrappedRegion)
   }
 
   def mute(guild: IGuild, isSelfMuted: Boolean): Queue[Unit] = Queue(() => client.mute(guild, isSelfMuted))
@@ -76,7 +76,7 @@ protected class DiscordClient(private val client: IDiscordClient) {
 
   def getGuildByID(id: Long): Option[Guild] = {
     val guild: IGuild = client.getGuildByID(id)
-    if (guild == null) Option.empty else Option[Guild](guild.toWrappedGuild)
+    if (guild == null) None else Some[Guild](guild.toWrappedGuild)
   }
 
   def getOurUser: User = client.getOurUser.toWrappedUser
@@ -85,7 +85,7 @@ protected class DiscordClient(private val client: IDiscordClient) {
 
   def getChannelByID(id: Long): Option[Channel] = {
     val channel: IChannel = client.getChannelByID(id)
-    if (channel == null) Option.empty else Option[Channel](channel.toWrappedChannel)
+    if (channel == null) None else Some[Channel](channel.toWrappedChannel)
   }
 
   def getApplicationOwner: User = client.getApplicationOwner.toWrappedUser
@@ -103,14 +103,14 @@ protected class DiscordClient(private val client: IDiscordClient) {
 
   def getInviteForCode(code: String): Option[Invite] = {
     val invite: IInvite = client.getInviteForCode(code)
-    if (invite == null) Option.empty else Option[Invite](invite.toWrappedInvite)
+    if (invite == null) None else Some[Invite](invite.toWrappedInvite)
   }
 
   def getOrCreatePMChannel(user: User): Queue[PrivateChannel] = Queue(() => client.getOrCreatePMChannel(user.user).toWrappedChannel)
 
   def getRoleByID(id: Long): Option[Role] = {
     val role: IRole = client.getRoleByID(id)
-    if (role == null) Option.empty else Option[Role](role.toWrappedRole)
+    if (role == null) None else Some[Role](role.toWrappedRole)
   }
 
   def getVoiceChannels: List[VoiceChannel] = getList[VoiceChannel, IVoiceChannel](client.getVoiceChannels, _.toWrappedChannel)
@@ -123,12 +123,12 @@ protected class DiscordClient(private val client: IDiscordClient) {
 
   def getMessageByID(id: Long): Option[Message] = {
     val message: IMessage = client.getMessageByID(id)
-    if (message == null) Option.empty else Option[Message](message.toWrappedMessage)
+    if (message == null) None else Some[Message](message.toWrappedMessage)
   }
 
   def getUserByID(id: Long): Option[User] = {
     val user: IUser = client.getUserByID(id)
-    if (user == null) Option.empty else Option[User](user.toWrappedUser)
+    if (user == null) None else Some[User](user.toWrappedUser)
   }
 
   def idle(playingText: String): Queue[Unit] = Queue(() => client.idle(playingText))
