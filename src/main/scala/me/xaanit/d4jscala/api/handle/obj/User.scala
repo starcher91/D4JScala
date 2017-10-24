@@ -1,6 +1,7 @@
 package me.xaanit.d4jscala.api.handle.obj
 
 import java.awt.Color
+import java.util.function.LongPredicate
 
 import com.koloboke.function.LongObjConsumer
 import me.xaanit.d4jscala.util.Queue
@@ -32,9 +33,9 @@ class User(private[api] val user: IUser) {
   def getVoiceStates: Map[Long, VoiceState] = {
     val states: LongMap[IVoiceState] = user.getVoiceStates
     val map: mutable.Map[Long, VoiceState] = mutable.Map()
-    states.keySet.forEach(key => {
-      map += key.toLong -> states.get(key).toWrappedState
-      1L
+    states.keySet.forEachWhile(value => {
+      map += value -> states.get(value).toWrappedState
+      true
     })
     map.toMap[Long, VoiceState]
   }
@@ -45,7 +46,7 @@ class User(private[api] val user: IUser) {
 
   def removeRole(role: Role): Queue[Unit] = Queue(() => user.removeRole(role.role))
 
-  def getRolesForGuild(guild: Guild): List[Role] = user.getRolesForGuild(guild.guild).toWrappedList[Role, IRole](_.toWrappedRole)
+  def getRolesForGuild(guild: Guild): List[Role] = user.getRolesForGuild(guild.guild).toWrappedList(_.toWrappedRole)
 
   def getPresence: Presence = user.getPresence.toWrappedPresence
 

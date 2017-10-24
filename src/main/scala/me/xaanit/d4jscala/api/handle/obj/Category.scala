@@ -20,26 +20,7 @@ class Category(category: ICategory) {
 
   def getUserOverrides: PermissionsOverride = {
     val over: LongMap[PermissionOverride] = category.getUserOverrides
-    val map: LongMap[PermissionsOverride] = new LongMap[PermissionsOverride] {override def forEachWhile(predicate: LongObjPredicate[_ >: PermissionsOverride]): Boolean = ???
-
-      override def containsKey(key: Long): Boolean = ???
-
-      override def forEach(action: LongObjConsumer[_ >: PermissionsOverride]): Unit = ???
-
-      override def values(): util.Collection[PermissionsOverride] = ???
-
-      override def clear(): Unit = ???
-
-      override def remove(key: Long): PermissionsOverride = ???
-
-      override def put(key: Long, value: PermissionsOverride): PermissionsOverride = ???
-
-      override def size(): Int = ???
-
-      override def get(key: Long): PermissionsOverride = ???
-
-      override def keySet(): LongSet = ???
-    }
+    null
   }
 
   def isNSFW = ???

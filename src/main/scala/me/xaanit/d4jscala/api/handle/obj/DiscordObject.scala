@@ -2,16 +2,13 @@ package me.xaanit.d4jscala.api.handle.obj
 
 import sx.blah.discord.handle.obj.IDiscordObject
 
-class DiscordObject[T](obj: IDiscordObject[T]){
-   def getShard = ???
+case class DiscordObject[T <: IDiscordObject[T]](obj: T) {
+  def getShard = ???
 
-   def getClient = ???
+  def getClient = ???
 
-   def copy() = ???
+  def copy() = ???
 
-   def getLongID = ???
+  def getLongID = ???
 }
 
-object DiscordObject {
-  def apply[T](obj: IDiscordObject[T]): DiscordObject[T] = new DiscordObject[T](obj)
-}

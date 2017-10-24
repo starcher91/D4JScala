@@ -3,7 +3,7 @@ package me.xaanit.d4jscala.api.handle.obj
 import sx.blah.discord.handle.obj.IWebhook
 import sx.blah.discord.util.Image
 
-class Webhook(webhook: IWebhook) extends DiscordObject[Webhook](this) {
+class Webhook(webhook: IWebhook) extends DiscordObject[IWebhook](webhook) {
   def getGuild = ???
 
   def getDefaultAvatar = ???

@@ -28,15 +28,15 @@ class Role(private[api] val role: IRole) {
 
   def changePermissions(permissions: Set[Permissions]): Queue[Unit] = Queue(() => role.changePermissions(permissions.toEnumSet))
 
-  def edit(color: Color, hoist: Boolean, name: String, permissions: util.EnumSet[Permissions], isMentionable: Boolean) = ???
+  def edit(color: Color, hoist: Boolean, name: String, permissions: Set[Permissions], isMentionable: Boolean): Queue[Unit] = Queue(() => role.edit(color, hoist, name, permissions.toEnumSet, isMentionable))
 
-  def getPermissions = ???
+  def getPermissions: Set[Permissions] = role.getPermissions.toSet
 
-  def isMentionable = ???
+  def isMentionable: Boolean = role.isMentionable
 
-  def getColor = ???
+  def getColor: Color = role.getColor
 
-  def isManaged = ???
+  def isManaged: Boolean = role.isManaged
 
   def changeName(name: String) = ???
 

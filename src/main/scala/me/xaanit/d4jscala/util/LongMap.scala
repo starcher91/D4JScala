@@ -10,7 +10,7 @@ class LongMap[T] extends sx.blah.discord.util.cache.LongMap[T] {
 
   private val map: mutable.Map[Long, T] = mutable.Map()
 
-  override def forEachWhile(predicate: LongObjPredicate[_ >: T]): Unit =     map.values.foreach(predicate.test(_, pr))
+  override def forEachWhile(predicate: LongObjPredicate[_ >: T]): Unit =  {}
 
 
   override def containsKey(key: Long) = ???

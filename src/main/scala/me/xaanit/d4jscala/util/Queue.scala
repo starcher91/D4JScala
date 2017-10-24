@@ -33,7 +33,7 @@ class Queue[T](action: IRequest[T]) {
     * @param success The code to run on the returned result.
     * @param failure The code to run on an error.
     */
-  def async(success: Consumer[T] = () => {}, failure: Consumer[Throwable] = () => {}): Unit = {
+  def async(success: Consumer[T] = (t) => {}, failure: Consumer[Throwable] = (t) => {}): Unit = {
     threadPool.execute(() => {
       Try(action.request()).fold((t) => failure.accept(t), (t) => success.accept(t))
     })

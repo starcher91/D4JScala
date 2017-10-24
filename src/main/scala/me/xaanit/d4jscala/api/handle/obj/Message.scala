@@ -24,7 +24,7 @@ class Message(message: IMessage) {
 
   def removeReaction(user: IUser, emoji: IEmoji) = ???
 
-  def removeReaction(user: IUser, emoji: emoji.Emoji) = ???
+  def removeReaction(user: IUser, emoji: Emoji) = ???
 
   def removeReaction(user: IUser, emoji: String) = ???
 
@@ -42,7 +42,7 @@ class Message(message: IMessage) {
 
   def addReaction(emoji: IEmoji) = ???
 
-  def addReaction(emoji: emoji.Emoji) = ???
+  def addReaction(emoji: Emoji) = ???
 
   def addReaction(emoji: String) = ???
 

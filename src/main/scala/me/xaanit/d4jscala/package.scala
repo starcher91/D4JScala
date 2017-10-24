@@ -4,6 +4,9 @@ import me.xaanit.d4jscala.api.handle.obj._
 import sx.blah.discord.api.{IDiscordClient, IShard}
 import sx.blah.discord.handle.obj._
 
+import scala.collection.JavaConverters
+import scala.collection.JavaConverters._
+import scala.collection.immutable.Nil
 import scala.collection.mutable.ListBuffer
 
 package object d4jscala {
@@ -77,19 +80,27 @@ package object d4jscala {
   implicit class ConversionEnumSet[T](val set: util.EnumSet[T]) extends AnyVal {
     def toSet(): Set[T] = {
       val mutable: scala.collection.mutable.Set[T] = scala.collection.mutable.Set()
-      for (t <- set) mutable += t
+      set.forEach(r => mutable += r)
       mutable.toSet
     }
   }
 
   implicit class ConversionList[WrappedType, UnwrappedType](val list: util.List[UnwrappedType]) extends AnyVal {
-    def toWrappedList[WrappedType, UnwrappedType](map: UnwrappedType => WrappedType): List[WrappedType] = {
-      val buffer: ListBuffer[WrappedType] = ListBuffer[WrappedType]()
-      list.forEach(e => buffer += map(e))
-      buffer.toList
+    def toWrappedList(map: UnwrappedType => WrappedType): List[WrappedType] = {
+      list.asScala.map(map).toList
     }
   }
+  implicit class ConversionSet[T <: Enum[T]](val set: Set[T]) extends AnyVal {
+    def toEnumSet(): util.EnumSet[T] = {
+      util.EnumSet.copyOf(JavaConverters.setAsJavaSet(set))
+    }
 
+    def toJavaSet(): util.Set[T] = {
+      val javaSet: util.Set[T] = new util.HashSet[T]()
+      set.foreach(javaSet.add)
+      javaSet
+    }
+  }
 
 
 }
