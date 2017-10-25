@@ -20,13 +20,17 @@ class Shard(private[api] val shard: IShard) {
   def getOrCreatePMChannel(user: User): Queue[PrivateChannel] = Queue(() => shard.getOrCreatePMChannel(user.user).toWrappedChannel)
 
   def getRoleByID(id: Long): Option[Role] = {
-    val role: IRole = shard.getRoleByID(id)
-    if (role == null) None else Some[Role](role.toWrappedRole)
+    obj.getRoleByID(id) match {
+      case null => None
+      case role => Some[Role](role.toWrappedRole)
+    }
   }
 
   def getVoiceChannelByID(id: Long): Option[VoiceChannel] = {
-    val channel: IVoiceChannel = shard.getVoiceChannelByID(id)
-    if (channel == null) None else Some[VoiceChannel](channel.toWrappedChannel)
+    obj.getVoiceChannelByID(id) match {
+      case null => None
+      case channel => Some[VoiceChannel](channel.toWrappedVoiceChannel)
+    }
   }
 
   def getVoiceChannels: List[VoiceChannel] = shard.getVoiceChannels.toWrappedList(_.toWrappedChannel)
@@ -36,8 +40,10 @@ class Shard(private[api] val shard: IShard) {
   def streaming(playingText: String, streamingUrl: String): Queue[Unit] = Queue(() => shard.streaming(playingText, streamingUrl))
 
   def getCategoryByID(id: Long): Option[Category] = {
-    val category: ICategory = shard.getCategoryByID(id)
-    if (category == null) None else Some[Category](category.toWrappedCategory)
+    obj.getCategoryByID(id) match {
+      case null => None
+      case category => Some[Category](category.toWrappedCategory)
+    }
   }
 
   def getCategories: List[Category] = shard.getCategories.toWrappedList(_.toWrappedCategory)
@@ -60,13 +66,17 @@ class Shard(private[api] val shard: IShard) {
   def getRoles: List[Role] = shard.getRoles.toWrappedList(_.toWrappedRole)
 
   def getMessageByID(id: Long): Option[Message] = {
-    val message: IMessage = shard.getMessageByID(id)
-    if(message == null) None else Some[Message](message.toWrappedMessage)
+    obj.getMessageByID(id) match {
+      case null => None
+      case message => Some[Message](message.toWrappedMessage)
+    }
   }
 
   def getUserByID(id: Long): Option[User] = {
-    val user: IUser = shard.getUserByID(id)
-    if(user == null) None else Some[User](user.toWrappedUser)
+    obj.getUserByID(id) match {
+      case null => None
+      case user => Some[User](user.toWrappedUser)
+    }
   }
 
   def getInfo: Array[Int] = shard.getInfo
