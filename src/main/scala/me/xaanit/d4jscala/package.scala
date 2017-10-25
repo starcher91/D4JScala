@@ -77,9 +77,9 @@ package object d4jscala {
 
   import java.util
 
-  implicit class ConversionEnumSet[T](val set: util.EnumSet[T]) extends AnyVal {
-    def toSet(): Set[T] = {
-      val mutable: scala.collection.mutable.Set[T] = scala.collection.mutable.Set()
+  implicit class ConversionEnumSet[E <: Enum[E]](val set: util.EnumSet[E]) extends AnyVal {
+    def toSet(): Set[E] = {
+      val mutable: scala.collection.mutable.Set[E] = scala.collection.mutable.Set()
       set.forEach(r => mutable += r)
       mutable.toSet
     }

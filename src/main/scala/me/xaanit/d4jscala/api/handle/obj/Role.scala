@@ -4,6 +4,7 @@ import java.awt.Color
 import java.util
 
 import me.xaanit.d4jscala._
+import me.xaanit.d4jscala.api.DiscordClient
 import me.xaanit.d4jscala.util.Queue
 import sx.blah.discord.handle.obj.{IRole, Permissions}
 
@@ -38,19 +39,19 @@ class Role(private[api] val role: IRole) {
 
   def isManaged: Boolean = role.isManaged
 
-  def changeName(name: String) = ???
+  def changeName(name: String): Queue[Unit] = Queue(() => role.changeName(name))
 
-  def getPosition = ???
+  def getPosition: Int = role.getPosition
 
-  def isEveryoneRole = ???
+  def isEveryoneRole: Boolean = role.isEveryoneRole
 
-  def getShard = ???
+  def getShard: Shard = role.getShard.toWrappedShard
 
-  def copy() = ???
+  def copy(): Role = role.copy.toWrappedRole
 
-  def getClient = ???
+  def getClient: DiscordClient = role.getClient.toWrappedClient
 
-  def getLongID = ???
+  def getLongID: Long = role.getLongID
 }
 
 object Role {

@@ -2,7 +2,7 @@ package me.xaanit.d4jscala.api.handle.obj
 
 import sx.blah.discord.handle.obj.IEmbed
 
-class Embed(embed: IEmbed) {
+case class Embed(embed: IEmbed) {
   def getEmbedProvider = ???
 
   def getEmbedFields = ???

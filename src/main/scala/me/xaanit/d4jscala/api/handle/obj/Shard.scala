@@ -1,14 +1,15 @@
 package me.xaanit.d4jscala.api.handle.obj
 
+import me.xaanit.d4jscala.util.Queue
 import sx.blah.discord.api.IShard
 import sx.blah.discord.handle.obj.IUser
 
 class Shard(private[api] val shard: IShard) {
-  def isReady = ???
+  def isReady: Boolean = shard.isReady
 
-  def invisible() = ???
+  def invisible(): Queue[Unit] = Queue(() => shard.invisible())
 
-  def login() = ???
+  def login(): Queue[Unit] = Queue(() => shard.login())
 
   def getMessages(includePrivate: Boolean) = ???
 
